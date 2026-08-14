@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111827">
+    <title>Browser Arcade</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header class="hero">
+      <a class="brand" href="/" aria-label="Browser Arcade home">
+        <span class="brand-mark" aria-hidden="true">BA</span>
+        <span>Browser Arcade</span>
+      </a>
+      <a class="text-link" href="/licenses.html">Open Source Licenses</a>
+      <div class="hero-copy">
+        <p class="eyebrow">Seven games. One local arcade.</p>
+        <h1>Pick a game and press play.</h1>
+        <p>Every game is served by your StartOS server with no ads, trackers, accounts, or Internet dependency.</p>
+      </div>
+    </header>
+    <main>
+      <section class="filters" aria-label="Game filters">
+        <label>
+          <span>Search games</span>
+          <input id="search" type="search" placeholder="Search by title or description" autocomplete="off">
+        </label>
+        <label>
+          <span>Genre</span>
+          <select id="genre">
+            <option value="all">All genres</option>
+          </select>
+        </label>
+      </section>
+      <p id="result-count" class="result-count" aria-live="polite"></p>
+      <section id="games" class="game-grid" aria-label="Games"></section>
+      <p id="empty-state" class="empty-state" hidden>No games match those filters.</p>
+    </main>
+    <footer>
+      <p>Scores and saves are browser-local and are not included in StartOS backups.</p>
+      <a href="/licenses.html">Licenses and source credits</a>
+    </footer>
+  </body>
+</html>

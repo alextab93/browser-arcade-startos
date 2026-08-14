@@ -1,0 +1,37 @@
+{
+  "name": "browser-arcade-startos",
+  "scripts": {
+    "build": "rm -rf ./javascript && ncc build startos/index.ts -o ./javascript",
+    "prettier": "prettier --write startos scripts tests playwright.config.ts",
+    "format:check": "prettier --check startos scripts tests playwright.config.ts",
+    "check": "tsc --noEmit",
+    "audit:catalog": "node scripts/verify-game-catalog.mjs",
+    "audit:licenses": "node scripts/audit-licenses.mjs",
+    "audit:network": "node scripts/audit-network-refs.mjs",
+    "audit:assets": "node scripts/audit-local-assets.mjs",
+    "audit": "npm run audit:catalog && npm run audit:licenses && npm run audit:network && npm run audit:assets",
+    "test:audits": "node --test tests/audit-failures.test.mjs",
+    "test:browser": "playwright test --project=chromium --project=firefox",
+    "test:browser:compat": "playwright test --project=webkit --project=mobile-chrome --project=mobile-safari",
+    "test": "npm run audit && npm run test:audits && npm run test:browser && npm run test:browser:compat"
+  },
+  "dependencies": {
+    "@start9labs/start-sdk": "2.0.9"
+  },
+  "overrides": {
+    "@start9labs/start-sdk": "$@start9labs/start-sdk"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "@playwright/test": "^1.54.2",
+    "@vercel/ncc": "^0.38.4",
+    "prettier": "^3.6.2",
+    "typescript": "^6.0.3"
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true
+  }
+}

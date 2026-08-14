@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<link rel="icon" sizes="114x114" href="img/sweepit-icon.png" />
+		<link rel="icon" type="image/png" href="img/sweepit-icon.png" />
+		<link rel="apple-touch-icon" href="img/sweepit-icon.png" />
+		<title>SweepIt</title>
+
+		<script type="text/javascript">
+			var net;
+			if (!net) {
+				net = {};
+			}
+			else if (typeof net != 'object') {
+				throw new Error('net already exists and is not an object');
+			}
+
+			if (!net.pretopia) {
+				net.pretopia = {};
+			}
+			else if (typeof net.pretopia != 'object') {
+				throw new Error('net.pretopia already exists and is not an object');
+			}
+
+			if (net.pretopia.DEVICE) {
+				throw new Error('net.pretopia.DEVICE already exists');
+			}
+
+			net.pretopia.DEVICE = {
+				// public properties
+				isMobile: false,
+				isAppMode: false,
+				device: {
+					family: '',
+					generation: ''
+				},
+				OS: {
+					name: '',
+					version: ''
+				},
+
+				// private properties
+				_userAgent: navigator.userAgent,
+				_devices: [
+					{
+						regExpr: /iPhone/,
+						device: 'iPhone',
+						OS: 'iOS'
+					},
+					{
+						regExpr: /iPod/,
+						device: 'iPod',
+						OS: 'iOS'
+					},
+					{
+						regExpr: /iPad/,
+						device: 'iPad',
+						OS: 'iOS'
+					},
+					{
+						regExpr: /Android/,
+						device: '',
+						OS: 'Android'
+					}
+				],
+
+				_init: function () {
+					for (var i = 0; i < this._devices.length; i++) {
+						if (this._userAgent.match(this._devices[i].regExpr)) {
+							this.device.family = this._devices[i].device;
+							this.OS.name = this._devices[i].OS;
+							switch (this.OS.name) {
+								case 'iOS':
+									this.isMobile = true;
+									this.OS.version = this._userAgent.match(/OS\s(\S+)/)[1].replace(/_/g, '.');
+									if (window.devicePixelRatio == 2 && (this.device.family == 'iPhone' || this.device.family == 'iPod')) {
+										// retina display iPhone/iPod
+										this.device.generation = '4';
+									}
+									break;
+								case 'Android':
+									this.isMobile = true;
+									var androidVersion = this._userAgent.match(/Android\s([^;)]+)/);
+									var androidDevice = this._userAgent.match(/([^;]+)\sBuild/);
+									this.OS.version = androidVersion ? androidVersion[1] : '';
+									this.device.family = androidDevice ? androidDevice[1].trim() : 'Android';
+									break;
+								default:
+									break;
+							}
+							break;
+						}
+					}
+					this.isAppMode = navigator.standalone || screen.height - document.documentElement.clientHeight < 40;
+				}
+			};
+
+			net.pretopia.DEVICE._init();
+		</script>
+
+		<script type="text/javascript" src="sweepit.js"></script>
+
+		<style media="screen" type="text/css">
+			body {
+				margin: 0px auto;
+				font-family: sans-serif;
+				font-size: 14px;
+				-webkit-user-select: none;
+				-webkit-touch-callout: none;
+				-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+				cursor: default;
+				padding-top: 6px;
+			}
+
+			#SweepItDiv {
+				color: #000000;
+			}
+
+			#SweepItDiv_numSecs {
+				display: inline;
+			}
+
+			.SweepItWrapper {
+			}
+
+			.SweepItBoard {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+				-khtml-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+				margin: 0px auto;
+				width: 100%;
+			}
+
+			.SweepItSquarePosition {
+				position: relative;
+				float: left;
+				text-align: center;
+				cursor: pointer;
+				font-weight: bold;
+			}
+
+			.SweepItSquareLastSquare {
+				width: 0px;
+			}
+
+			.SweepItSquareClosed {
+				background-color: #e0e0e0;
+				border-right: 2px solid #555555;
+				border-bottom: 2px solid #555555;
+				border-left: 2px solid #ffffff;
+				border-top: 2px solid #ffffff;
+			}
+
+			.SweepItSquareOpen {
+				background-color: #aaaaaa;
+				border: 2px solid #aaaaaa;
+				cursor: default;
+			}
+
+			.SweepItSquareLoose {
+				background-color: #ebaeae;
+				border-right: 2px solid #555555;
+				border-bottom: 2px solid #555555;
+				border-left: 2px solid #ffffff;
+				border-top: 2px solid #ffffff;
+			}
+
+			.SweepItTimer {
+				margin: 0px auto;
+				text-align: center;
+				font-weight: bold;
+			}
+
+			#copyright {
+				position: fixed;
+				left: 50%;
+				bottom: 10px;
+				text-align: center;
+				font-size: 13px;
+				color: #555;
+			}
+
+			a {
+				color: #555;
+				text-decoration: none;
+			}
+
+			.slider {
+				position: fixed;
+				bottom: 0px;
+				left: 0px;
+				height: 75%;
+				width: 100%;
+				font-size: 60px;
+				color: #fff;
+				background: rgba(0, 104, 179, 0.9);
+				transition-property: all;
+				transition-duration: 0.3s;
+				transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+				text-align: center;
+				-moz-box-shadow: 0px -2px 4px #e8eaf6;
+				-webkit-box-shadow: 0px -2px 4px #e8eaf6;
+				box-shadow: 0px -2px 4px #e8eaf6;
+			}
+
+			.slider.closed {
+				bottom: -75%;
+			}
+
+			.retryButton {
+				background: #fff;
+				font-size: 20px;
+				color: rgb(0, 104, 179);
+				padding: 5px;
+				vertical-align: middle;
+				margin: 0px auto;
+				margin-top: 25px;
+				width: 170px;
+				cursor: pointer;
+			}
+
+			.retryButton:hover {
+				color: #fff;
+				background: rgba(0, 104, 179, 0.95);
+			}
+
+			#landscapeMode {
+				position: absolute;
+				z-index: 100;
+				top: 0px;
+				left: 0px;
+				bottom: 0px;
+				width: 100%;
+				background: rgb(0, 104, 179);
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body ontouchmove="BlockMove(event);">
+		<div id="landscapeMode" style="display: none">
+			<div style="font-size: 32px; color: #fff; margin-top: 100px">Rotate your device to play SweepIt</div>
+		</div>
+
+		<div id="wrapper">
+			<div id="SweepItDiv"></div>
+			<div id="copyright">
+				&copy; 2010, 2014, Thijs van As
+			</div>
+			<div id="endGamePanel" class="slider closed"></div>
+		</div>
+
+		<script type="text/javascript">
+			/* <![CDATA[ */
+			if ('standalone' in window.navigator && window.navigator.standalone) {
+				// iOS installed web app mode
+				document.body.style.paddingTop = '26px';
+			}
+
+			function BlockMove(event) {
+				// tell the mobile browser not to move the window on touches.
+				event.preventDefault();
+			}
+
+			function checkOrientation() {
+				var orientation = window.orientation;
+				var landscapeDiv = document.getElementById('landscapeMode');
+				var SweepItDiv = document.getElementById('SweepItDiv');
+
+				switch (orientation) {
+					case 0:
+					case 180:
+						landscapeDiv.style.display = 'none';
+						SweepItDiv.style.display = '';
+						if (loadedInWrongOrientation) {
+							loadedInWrongOrientation = false;
+							loadGame();
+						}
+						break;
+					case -90:
+					case 90:
+						landscapeDiv.style.display = '';
+						SweepItDiv.style.display = 'none';
+						break;
+				}
+			}
+
+			var myBrowser = net.pretopia.DEVICE;
+			var SweepItInstance = new net.pretopia.SweepIt('SweepItDiv');
+			var loadedInWrongOrientation = false;
+			var gameStarted = false;
+
+			function loadGame() {
+				if (window.orientation == -90 || window.orientation == 90) {
+					loadedInWrongOrientation = true;
+					document.getElementById('landscapeMode').style.display = '';
+				}
+
+				var gameWidth = window.innerHeight < window.innerWidth ? window.innerHeight : window.innerWidth;
+
+				SweepItInstance.main(gameWidth);
+			}
+
+			window.onload = function () {
+				window.onorientationchange = checkOrientation;
+
+				loadGame();
+
+				window.scrollTo(0, 1);
+			}
+			/* ]]> */
+		</script>
+	</body>
+</html>

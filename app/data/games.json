@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "games": [
+    {
+      "id": "2048",
+      "name": "2048",
+      "path": "/games/2048/",
+      "category": "Puzzle",
+      "description": "Slide matching tiles together and build the 2048 tile.",
+      "controls": ["Arrow keys or WASD", "Swipe on touch screens"],
+      "input": { "keyboard": true, "mouse": false, "touch": true, "gamepad": false },
+      "fullscreen": true,
+      "license": "MIT",
+      "upstream": "https://github.com/gabrielecirulli/2048",
+      "sourceKey": "2048",
+      "featured": true
+    },
+    {
+      "id": "radius-raid",
+      "name": "Radius Raid",
+      "path": "/games/radius-raid/",
+      "category": "Shooter",
+      "description": "Defend the arena in a compact neon space shooter.",
+      "controls": ["WASD or arrow keys", "Mouse to aim", "F autofire", "P pause", "M mute"],
+      "input": { "keyboard": true, "mouse": true, "touch": false, "gamepad": false },
+      "fullscreen": true,
+      "license": "MIT",
+      "upstream": "https://github.com/jackrugile/radius-raid-js13k",
+      "sourceKey": "radius-raid",
+      "featured": true
+    },
+    {
+      "id": "brickit",
+      "name": "BrickIt",
+      "path": "/games/brickit/",
+      "category": "Arcade",
+      "description": "Clear brick formations with a paddle and bouncing ball.",
+      "controls": ["Arrow keys", "Touch controls"],
+      "input": { "keyboard": true, "mouse": false, "touch": true, "gamepad": false },
+      "fullscreen": true,
+      "license": "MIT",
+      "upstream": "https://github.com/tvanas/html5-games",
+      "sourceKey": "tvanas-html5-games",
+      "featured": false
+    },
+    {
+      "id": "bounceit",
+      "name": "BounceIt",
+      "path": "/games/bounceit/",
+      "category": "Arcade",
+      "description": "Guide a bouncing ball upward across shifting platforms.",
+      "controls": ["Arrow keys", "Space boost", "Touch controls"],
+      "input": { "keyboard": true, "mouse": false, "touch": true, "gamepad": false },
+      "fullscreen": true,
+      "license": "MIT",
+      "upstream": "https://github.com/tvanas/html5-games",
+      "sourceKey": "tvanas-html5-games",
+      "featured": false
+    },
+    {
+      "id": "floodit",
+      "name": "FloodIt",
+      "path": "/games/floodit/",
+      "category": "Puzzle",
+      "description": "Fill the board with one color before your turns run out.",
+      "controls": ["Mouse", "Touch controls"],
+      "input": { "keyboard": false, "mouse": true, "touch": true, "gamepad": false },
+      "fullscreen": true,
+      "license": "MIT",
+      "upstream": "https://github.com/tvanas/html5-games",
+      "sourceKey": "tvanas-html5-games",
+      "featured": false
+    },
+    {
+      "id": "sweepit",
+      "name": "SweepIt",
+      "path": "/games/sweepit/",
+      "category": "Puzzle",
+      "description": "Reveal safe squares and flag every hidden mine.",
+      "controls": ["Mouse buttons", "Touch dig and flag modes"],
+      "input": { "keyboard": false, "mouse": true, "touch": true, "gamepad": false },
+      "fullscreen": true,
+      "license": "MIT",
+      "upstream": "https://github.com/tvanas/html5-games",
+      "sourceKey": "tvanas-html5-games",
+      "featured": false
+    },
+    {
+      "id": "snakeit",
+      "name": "SnakeIt",
+      "path": "/games/snakeit/",
+      "category": "Arcade",
+      "description": "Grow your snake while avoiding the walls and your own trail.",
+      "controls": ["Arrow keys", "Swipe on touch screens"],
+      "input": { "keyboard": true, "mouse": false, "touch": true, "gamepad": false },
+      "fullscreen": true,
+      "license": "MIT",
+      "upstream": "https://github.com/tvanas/html5-games",
+      "sourceKey": "tvanas-html5-games",
+      "featured": false
+    }
+  ]
+}

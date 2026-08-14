@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta name="mobile-web-app-capable" content="yes" />
+
+		<link rel="icon" type="image/png" href="img/bounceit-icon.png" />
+		<link rel="apple-touch-icon" href="img/bounceit-icon.png" />
+		<link rel="apple-touch-startup-image" href="img/bounceit-splash.png" />
+
+		<title>BounceIt</title>
+		<script type="text/javascript" src="bounceit.js"></script>
+		<script type="text/javascript">
+			var net;
+			if (!net) {
+				net = {};
+			}
+			else if (typeof net != 'object') {
+				throw new Error('net already exists and is not an object');
+			}
+
+			if (!net.pretopia) {
+				net.pretopia = {};
+			}
+			else if (typeof net.pretopia != 'object') {
+				throw new Error('net.pretopia already exists and is not an object');
+			}
+
+			if (net.pretopia.DEVICE) {
+				throw new Error('net.pretopia.DEVICE already exists');
+			}
+
+			net.pretopia.DEVICE = {
+				// public properties
+				isMobile: false,
+				isAppMode: false,
+				device: {
+					family: '',
+					generation: ''
+				},
+				OS: {
+					name: '',
+					version: ''
+				},
+
+				// private properties
+				_userAgent: navigator.userAgent,
+				_devices: [
+					{
+						regExpr: /iPhone/,
+						device: 'iPhone',
+						OS: 'iOS'
+					},
+					{
+						regExpr: /iPod/,
+						device: 'iPod',
+						OS: 'iOS'
+					},
+					{
+						regExpr: /iPad/,
+						device: 'iPad',
+						OS: 'iOS'
+					},
+					{
+						regExpr: /Android/,
+						device: '',
+						OS: 'Android'
+					}
+				],
+
+				_init: function () {
+					for (var i = 0; i < this._devices.length; i++) {
+						if (this._userAgent.match(this._devices[i].regExpr)) {
+							this.device.family = this._devices[i].device;
+							this.OS.name = this._devices[i].OS;
+							switch (this.OS.name) {
+								case 'iOS':
+									this.isMobile = true;
+									this.OS.version = this._userAgent.match(/OS\s(\S+)/)[1].replace(/_/g, '.');
+									if (window.devicePixelRatio == 2 && (this.device.family == 'iPhone' || this.device.family == 'iPod')) {
+										// retina display iPhone/iPod
+										this.device.generation = '4';
+									}
+									break;
+								case 'Android':
+									this.isMobile = true;
+									var androidVersion = this._userAgent.match(/Android\s([^;)]+)/);
+									var androidDevice = this._userAgent.match(/([^;]+)\sBuild/);
+									this.OS.version = androidVersion ? androidVersion[1] : '';
+									this.device.family = androidDevice ? androidDevice[1].trim() : 'Android';
+									break;
+								default:
+									break;
+							}
+							break;
+						}
+					}
+					this.isAppMode = navigator.standalone || screen.height - document.documentElement.clientHeight < 40;
+				}
+			};
+
+			net.pretopia.DEVICE._init();
+		</script>
+
+		<style media="screen" type="text/css">
+			body {
+				background: #000000;
+				padding: 0px;
+				margin: 0px auto;
+				font-family:
+					Helvetica Neue,
+					Helvetica,
+					Arial,
+					sans-serif;
+				-webkit-user-select: none;
+				-webkit-touch-callout: none;
+				-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+			}
+
+			h2 {
+				font-size: 20px;
+			}
+
+			#BounceItDiv {
+				vertical-align: bottom;
+			}
+
+			.BounceItWrapper {
+			}
+
+			.BounceItGameCanvas {
+			}
+		</style>
+	</head>
+
+	<body ontouchmove="BlockMove(event);">
+		<div id="landscapeMode" style="display: none">
+			<div style="margin: 0px auto; margin-top: 10px; margin-bottom: 30px; text-align: center; color: #ffffff">
+				<img src="img/bounceit-logo.png" alt="BounceIt" title="BounceIt" />
+			</div>
+
+			<div style="text-align: center; color: #ffffff; margin-bottom: 35px">
+				<h2>Please turn your device into portrait mode</h2>
+			</div>
+
+			<div style="margin: 0px auto; text-align: center; color: #ffffff">
+				<img src="img/bounceit-icon.png" alt="BounceIt" title="BounceIt" />
+			</div>
+		</div>
+
+		<div id="BounceItDiv"></div>
+
+		<script type="text/javascript">
+			/* <![CDATA[ */
+			function BlockMove(event) {
+				// tell the mobile browser not to move the window on touches
+				event.preventDefault();
+			}
+
+			var BounceItInstance = new net.pretopia.BounceIt('BounceItDiv');
+			var params = {};
+			var myBrowser = net.pretopia.DEVICE;
+			var BounceItDiv = document.getElementById('BounceItDiv');
+
+			function checkOrientation() {
+				var orientation = window.orientation;
+				var landscapeDiv = document.getElementById('landscapeMode');
+
+				if (myBrowser.device.family != 'iPad') {
+					switch (orientation) {
+						case 0:
+						case 180:
+							landscapeDiv.style.display = 'none';
+							BounceItDiv.style.display = '';
+							break;
+						case -90:
+						case 90:
+							BounceItInstance.pause(true);
+							landscapeDiv.style.display = '';
+							BounceItDiv.style.display = 'none';
+							break;
+					}
+				} else {
+					BounceItInstance.pause(true);
+				}
+
+				resizeWindow();
+			}
+
+			function init() {
+				if (myBrowser.isMobile) {
+					var ver = myBrowser.OS.version;
+					var major = ver.substring(0, ver.indexOf('.'));
+					var minor = ver.substring(ver.indexOf('.'));
+					minor = minor.replace(/\./g, '');
+					ver = new Number(major + '.' + minor);
+
+					/* game controls via accelerometer work on iOS devices, but it's
+                       actually a quite crappy experience, so disabling it
+                    
+					if (ver >= 4.21 && myBrowser.OS.name == 'iOS') {
+						params.accelerometerEnabled = Boolean(true);
+					}
+                    
+                    */
+
+					params.attachKeyboard = Boolean(false);
+					window.onorientationchange = checkOrientation;
+
+					switch (myBrowser.device.family) {
+						case 'iPhone':
+						case 'iPod':
+							if (myBrowser.isAppMode) {
+								BounceItDiv.style.width = '320px'; //320
+								params.gameAreaWidth = new Number(320);
+								BounceItDiv.style.height = '460px'; // 460
+								params.gameAreaHeight = new Number(460);
+							}
+
+							/*
+							if (myBrowser.device.hasRetina) {
+								params.coreLoopInterval = new Number(33);
+								params.stepDivider = new Number(30);
+								params.lrSpeed = new Number(10);
+							}
+                            */
+							break;
+						case 'iPad':
+							BounceItDiv.style.border = '1px solid #555555';
+							BounceItDiv.style.width = '500px'; //400
+							BounceItDiv.style.height = '650px'; //540
+							BounceItDiv.style.margin = '0px auto';
+							params.gameAreaWidth = new Number(500);
+							params.gameAreaHeight = new Number(650);
+							break;
+						default:
+							//android
+							BounceItDiv.style.width = screen.availWidth + 'px';
+							params.gameAreaWidth = new Number(screen.availWidth);
+							if (myBrowser.isAppMode) {
+								BounceItDiv.style.height = screen.availHeight - 30 + 'px';
+								params.gameAreaHeight = new Number(screen.availHeight - 30);
+							}
+							else {
+								BounceItDiv.style.height = screen.availHeight - 130 + 'px'; //185
+								params.gameAreaHeight = new Number(screen.availHeight - 130);
+							}
+							//params.coreLoopInterval = new Number(33);
+							//params.stepDivider = new Number(30);
+							//params.lrSpeed = new Number(10);
+							break;
+					}
+				}
+				else {
+					BounceItDiv.style.border = '1px solid #555555';
+					BounceItDiv.style.width = '500px'; //450
+					BounceItDiv.style.height = '640px'; //540
+					BounceItDiv.style.margin = '0px auto';
+					params.gameAreaWidth = new Number(500);
+					params.gameAreaHeight = new Number(640);
+					params.platformWidth = new Number(90);
+					params.platformHeight = new Number(12);
+					params.lrSpeed = new Number(9);
+					params.ballAmplitude = new Number(165);
+				}
+
+				BounceItInstance.main(params);
+				resizeWindow();
+				checkOrientation();
+			}
+
+			function resizeWindow() {
+				if (myBrowser.OS.name == 'Android') {
+					window.scrollTo(0, window.innerHeight);
+					window.scrollTo(0, 1);
+				}
+				else {
+					window.scrollTo(0, 1);
+				}
+
+				var div = document.getElementById('BounceItDiv');
+				div.style.marginTop = (window.innerHeight >> 1) - (div.offsetHeight >> 1) + 'px';
+			}
+			window.onload = init;
+			window.onresize = resizeWindow;
+			window.onblur = function () {
+				BounceItInstance.pause(true);
+			};
+			/* ]]> */
+		</script>
+	</body>
+</html>

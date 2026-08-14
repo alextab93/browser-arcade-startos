@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "key": "2048",
+      "name": "2048",
+      "repository": "https://github.com/gabrielecirulli/2048",
+      "commit": "478b6ec346e3787f589e4af751378d06ded4cbbc",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2014 Gabriele Cirulli",
+      "licenseFile": "third_party/2048/LICENSE.txt",
+      "vendoredPaths": ["app/games/2048"]
+    },
+    {
+      "key": "radius-raid",
+      "name": "Radius Raid",
+      "repository": "https://github.com/jackrugile/radius-raid-js13k",
+      "commit": "361ab5166570cfc8a29a4fc15c9afba566117b66",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2014 Jack Rugile",
+      "licenseFile": "third_party/radius-raid/LICENSE.md",
+      "vendoredPaths": ["app/games/radius-raid"]
+    },
+    {
+      "key": "tvanas-html5-games",
+      "name": "HTML5 Games by tvanas",
+      "repository": "https://github.com/tvanas/html5-games",
+      "commit": "3a42addef24fafca29438a98cbebf7237021c299",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2010-2017 Thijs van As",
+      "licenseFile": "third_party/tvanas-html5-games/LICENSE",
+      "vendoredPaths": [
+        "app/games/brickit",
+        "app/games/bounceit",
+        "app/games/floodit",
+        "app/games/sweepit",
+        "app/games/snakeit"
+      ]
+    }
+  ]
+}

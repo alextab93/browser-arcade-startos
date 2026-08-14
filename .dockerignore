@@ -1,0 +1,11 @@
+.git
+.gitmodules
+.ai-workspace
+.github
+*.s9pk
+docker-images
+javascript
+node_modules
+ncc-cache
+test-results
+tests

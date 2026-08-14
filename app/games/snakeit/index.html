@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>SnakeIt</title>
+    <meta charset="utf-8">
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="icon" type="image/png" href="img/snakeit-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="img/snakeit-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style media="screen" type="text/css">
+      body {
+        margin: 0px auto;
+        -webkit-user-select: none;
+        background-color: #000000;
+      }
+
+      #snake {
+        margin: 0px auto;
+      }
+
+      .dpad {
+        float: left;
+      }
+
+      #dpad {
+        margin: 0px auto;
+        margin-top: -4px;
+        display: none;
+      }
+
+      #left {
+        background-color: #2d2d2d;
+        height: 100%;
+        width: 30%;
+      }
+
+      #right {
+        background-color: #2d2d2d;
+        height: 100%;
+        width: 30%;
+      }
+
+      #center {
+        width: 40%;
+      }
+
+      #up {
+        background-color: #333333;
+        height: 50%;
+      }
+
+      #down {
+        background-color: #1e1e1e;
+        height: 50%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="snake"></div>
+  
+    <div id="dpad">
+      <div id="left" class="dpad"></div>
+      <div id="center" class="dpad">
+        <div id="up"></div>
+        <div id="down"></div>
+      </div>
+      <div id="right" class="dpad"></div>
+    </div>
+
+    <script type="text/javascript" src="snakeit.js"></script>
+
+  </body>
+</html>
